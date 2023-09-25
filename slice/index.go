@@ -2,11 +2,15 @@ package slice
 
 type Slice[El any] []El
 
-func New[El any](el []El) Slice[El] {
+func Arm[El any](el []El) Slice[El] {
 	return Slice[El](el)
 }
 
-func (slice Slice[El]) Raw() []El {
+func New[El any](el ...El) Slice[El] {
+	return Slice[El](el)
+}
+
+func (slice Slice[El]) Disarm() []El {
 	return []El(slice)
 }
 
@@ -27,11 +31,19 @@ func (slice Slice[El]) Each(cb func(item Item[El])) {
 }
 
 func (slice Slice[El]) Filter(cb func(item Item[El]) bool) Slice[El] {
-	var result []El
+	var result Slice[El]
 	for index, item := range slice {
 		if cb(Item[El]{item, index, slice}) {
 			result = append(result, item)
 		}
 	}
-	return New[El](result)
+	return result
+}
+
+func Map[Input any, Output any](inputs []Input, cb func(Item[Input]) Output) Slice[Output] {
+	result := make_container[Output](len(inputs))
+	for index, item := range inputs {
+		result = append(result, cb(Item[Input]{item, index, inputs}))
+	}
+	return result
 }
