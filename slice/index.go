@@ -66,3 +66,21 @@ func (slice Slice[El]) Reverse() Slice[El] {
 	}
 	return result
 }
+
+func (slice Slice[El]) Every(cb func(Item[El]) bool) bool {
+	for index, item := range slice {
+		if !cb(Item[El]{item, index, slice}) {
+			return false
+		}
+	}
+	return true
+}
+
+func (slice Slice[El]) Some(cb func(Item[El]) bool) bool {
+	for index, item := range slice {
+		if cb(Item[El]{item, index, slice}) {
+			return true
+		}
+	}
+	return false
+}

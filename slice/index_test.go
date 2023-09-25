@@ -131,3 +131,35 @@ func Test_reverse(t *testing.T) {
 		t.Error("reverse error", reversed)
 	}
 }
+
+func Test_every(t *testing.T) {
+	raw := []int{2, 4, 6, 8, 10}
+	count := 0
+	is_all_even := Arm(raw).Every(func(item Item[int]) bool {
+		count += 1
+		return item.El%2 == 0
+	})
+	if !is_all_even {
+		t.Error("slice.every not all even")
+	}
+	if count != 5 {
+		t.Error("slice.every iteration time is not 5", count)
+	}
+}
+
+func Test_some(t *testing.T) {
+	raw := []int{1, 3, 6, 2, 1, 10, 11}
+	count := 0
+
+	has6 := Arm(raw).Some(func(item Item[int]) bool {
+		count += 1
+		return item.El == 6
+	})
+
+	if !has6 {
+		t.Error("slice.Some no 6")
+	}
+	if count != 3 {
+		t.Error("slice.Some times of test is not 3", count)
+	}
+}
