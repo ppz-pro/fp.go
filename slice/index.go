@@ -40,6 +40,16 @@ func (slice Slice[El]) Filter(cb func(item Item[El]) bool) Slice[El] {
 	return result
 }
 
+func (slice Slice[El]) Find(cb func(item Item[El]) bool) (El, int, bool) {
+	for index, item := range slice {
+		if cb(Item[El]{item, index, slice}) {
+			return item, index, true
+		}
+	}
+	var nil_item El
+	return nil_item, 0, false
+}
+
 func Map[Input any, Output any](inputs []Input, cb func(Item[Input]) Output) Slice[Output] {
 	result := make_container[Output](len(inputs))
 	for index, item := range inputs {
