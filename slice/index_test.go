@@ -163,3 +163,16 @@ func Test_some(t *testing.T) {
 		t.Error("slice.Some times of test is not 3", count)
 	}
 }
+
+func Test_reduce(t *testing.T) {
+	acc := Reduce[int, string](
+		"666-",
+		[]int{1, 2, 3, 10, 20, 30},
+		func(acc string, item Item[int]) string {
+			return acc + fmt.Sprintf("%d", item.El)
+		},
+	)
+	if acc != "666-123102030" {
+		t.Error("slice.Reduce error", acc)
+	}
+}

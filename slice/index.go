@@ -58,6 +58,13 @@ func Map[Input any, Output any](inputs []Input, cb func(Item[Input]) Output) Sli
 	return result
 }
 
+func Reduce[El any, Result any](result Result, slice []El, cb func(result Result, item Item[El]) Result) Result {
+	for index, item := range slice {
+		result = cb(result, Item[El]{item, index, slice})
+	}
+	return result
+}
+
 func (slice Slice[El]) Reverse() Slice[El] {
 	length := len(slice)
 	result := make_container[El](length)
