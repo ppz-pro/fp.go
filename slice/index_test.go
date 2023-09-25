@@ -11,7 +11,7 @@ func is_same_slice[El comparable](a []El, b []El) bool {
 			return false
 		}
 	}
-	return true
+	return len(a) == len(b) && cap(a) == cap(b)
 }
 
 func Test_each(t *testing.T) {
@@ -24,12 +24,12 @@ func Test_each(t *testing.T) {
 		if item.Index != count {
 			t.Error("index error", item.Index, count)
 		}
-		test = append(test, item.El)
+		test[item.Index] = item.El
 		count = count + 1
 	})
 
-	if !is_same_slice(raw, test) {
-		t.Error("wrong el after each")
+	if !is_same_slice([]int{1, 2, 3}, test) {
+		t.Error("wrong el after each", test)
 	}
 }
 
@@ -121,5 +121,13 @@ func Test_find_item(t *testing.T) {
 	}
 	if count != 6 {
 		t.Error("wrong count on not found", count)
+	}
+}
+
+func Test_reverse(t *testing.T) {
+	raw := []int{1, 2, 3, 4, 6}
+	reversed := Arm(raw).Reverse()
+	if !is_same_slice(reversed, []int{6, 4, 3, 2, 1}) {
+		t.Error("reverse error", reversed)
 	}
 }

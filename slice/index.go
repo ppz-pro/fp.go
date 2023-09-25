@@ -21,7 +21,7 @@ type Item[El any] struct {
 }
 
 func make_container[item any](size int) []item {
-	return make([]item, 0, size)
+	return make([]item, size)
 }
 
 func (slice Slice[El]) Each(cb func(item Item[El])) {
@@ -53,7 +53,16 @@ func (slice Slice[El]) Find(cb func(item Item[El]) bool) (El, int, bool) {
 func Map[Input any, Output any](inputs []Input, cb func(Item[Input]) Output) Slice[Output] {
 	result := make_container[Output](len(inputs))
 	for index, item := range inputs {
-		result = append(result, cb(Item[Input]{item, index, inputs}))
+		result[index] = cb(Item[Input]{item, index, inputs})
+	}
+	return result
+}
+
+func (slice Slice[El]) Reverse() Slice[El] {
+	length := len(slice)
+	result := make_container[El](length)
+	for i, item := range slice {
+		result[length-1-i] = item
 	}
 	return result
 }
