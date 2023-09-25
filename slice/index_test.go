@@ -34,11 +34,11 @@ func Test_each(t *testing.T) {
 
 func Test_filter(t *testing.T) {
 	raw := []int{1, 2, 3, 4, 5, 6, 7}
-	odds := New[int](raw).Filter(
+	odds := New(raw).Filter(
 		func(item Item[int]) bool {
 			return item.El%2 == 1
 		},
-	).Get()
+	).Raw()
 
 	if len(odds) != 4 {
 		t.Error("filter error, length", len(odds))

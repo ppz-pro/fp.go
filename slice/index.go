@@ -1,19 +1,13 @@
 package slice
 
-type Slice[El any] struct {
-	value []El
-}
+type Slice[El any] []El
 
 func New[El any](el []El) Slice[El] {
-	return Slice[El]{el}
+	return Slice[El](el)
 }
 
-func (slice Slice[El]) Get() []El {
-	return slice.value
-}
-
-func (slice Slice[El]) Len() int {
-	return len(slice.value)
+func (slice Slice[El]) Raw() []El {
+	return []El(slice)
 }
 
 type Item[El any] struct {
@@ -27,14 +21,14 @@ func make_container[item any](size int) []item {
 }
 
 func (slice Slice[El]) Each(cb func(item Item[El])) {
-	for index, item := range slice.value {
+	for index, item := range slice {
 		cb(Item[El]{item, index, slice})
 	}
 }
 
 func (slice Slice[El]) Filter(cb func(item Item[El]) bool) Slice[El] {
 	var result []El
-	for index, item := range slice.value {
+	for index, item := range slice {
 		if cb(Item[El]{item, index, slice}) {
 			result = append(result, item)
 		}
