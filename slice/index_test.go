@@ -1,4 +1,4 @@
-package slice
+package ppz_sli
 
 import (
 	"fmt"
@@ -20,11 +20,11 @@ func Test_each(t *testing.T) {
 	test := make_container[int](len(raw))
 	count := 0
 
-	Arm(raw).Each(func(item Item[int]) {
-		if item.Index != count {
-			t.Error("index error", item.Index, count)
+	Arm(raw).Each2(func(el int, index int) {
+		if index != count {
+			t.Error("index error", index, count)
 		}
-		test[item.Index] = item.El
+		test[index] = el
 		count = count + 1
 	})
 
@@ -36,8 +36,8 @@ func Test_each(t *testing.T) {
 func Test_filter(t *testing.T) {
 	raw := []int{1, 2, 3, 4, 5, 6, 7}
 	odds := Arm(raw).Filter(
-		func(item Item[int]) bool {
-			return item.El%2 == 1
+		func(el int) bool {
+			return el%2 == 1
 		},
 	).Disarm()
 
@@ -51,8 +51,8 @@ func Test_filter(t *testing.T) {
 
 func Test_map(t *testing.T) {
 	raw := []int{1, 2, 3}
-	power2 := Map(raw, func(item Item[int]) string {
-		return fmt.Sprintf("%d", item.El*item.El)
+	power2 := Map(raw, func(el int) string {
+		return fmt.Sprintf("%d", el*el)
 	})
 
 	count := 0
@@ -87,9 +87,9 @@ func Test_map(t *testing.T) {
 func Test_find_item(t *testing.T) {
 	raw := []int{1, 3, 4, 5, 8, 10}
 	count := 0
-	gt5, index, ok := Arm(raw).Find(func(item Item[int]) bool {
+	gt5, index, ok := Arm(raw).Find(func(el int) bool {
 		count = count + 1
-		return item.El > 5
+		return el > 5
 	})
 
 	if gt5 != 8 {
@@ -106,9 +106,9 @@ func Test_find_item(t *testing.T) {
 	}
 
 	count = 0
-	six, index, ok := Arm(raw).Find(func(item Item[int]) bool {
+	six, index, ok := Arm(raw).Find(func(el int) bool {
 		count += 1
-		return item.El == 6
+		return el == 6
 	})
 	if six != 0 {
 		t.Error("found six", six)
@@ -135,9 +135,9 @@ func Test_reverse(t *testing.T) {
 func Test_every(t *testing.T) {
 	raw := []int{2, 4, 6, 8, 10}
 	count := 0
-	is_all_even := Arm(raw).Every(func(item Item[int]) bool {
+	is_all_even := Arm(raw).Every(func(el int) bool {
 		count += 1
-		return item.El%2 == 0
+		return el%2 == 0
 	})
 	if !is_all_even {
 		t.Error("slice.every not all even")
@@ -151,9 +151,9 @@ func Test_some(t *testing.T) {
 	raw := []int{1, 3, 6, 2, 1, 10, 11}
 	count := 0
 
-	has6 := Arm(raw).Some(func(item Item[int]) bool {
+	has6 := Arm(raw).Some(func(el int) bool {
 		count += 1
-		return item.El == 6
+		return el == 6
 	})
 
 	if !has6 {
@@ -165,11 +165,12 @@ func Test_some(t *testing.T) {
 }
 
 func Test_reduce(t *testing.T) {
+	result := "666-"
 	acc := Reduce[int, string](
-		"666-",
+		&result,
 		[]int{1, 2, 3, 10, 20, 30},
-		func(acc string, item Item[int]) string {
-			return acc + fmt.Sprintf("%d", item.El)
+		func(acc *string, el int) {
+			*acc += fmt.Sprintf("%d", el)
 		},
 	)
 	if acc != "666-123102030" {

@@ -1,3 +1,3 @@
-module github.com/ppz-pro/utils.go
+module github.com/ppz-pro/ppz.go
 
 go 1.21.1
