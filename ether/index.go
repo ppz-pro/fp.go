@@ -26,3 +26,15 @@ func (ether Ether[Left, Right]) Match(cb_left func(Left), cb_right func(Right)) 
 		cb_right(ether.right)
 	}
 }
+
+func Match[Left any, Right any, Result any](
+	ether Ether[Left, Right],
+	cb_left func(Left) Result,
+	cb_right func(Right) Result,
+) Result {
+	if ether.is_left {
+		return cb_left(ether.left)
+	} else {
+		return cb_right(ether.right)
+	}
+}
