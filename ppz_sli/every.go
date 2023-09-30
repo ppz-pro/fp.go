@@ -17,6 +17,7 @@ func (slice Slice[El]) Every2(cb func(El, int) bool) bool {
 	)
 }
 
+// Every 返回 slice 里的所有元素是否都满足某个（或某些）条件
 func (slice Slice[El]) Every(cb func(El) bool) bool {
 	return slice.Every3(
 		func(el El, _ int, _ Slice[El]) bool {
